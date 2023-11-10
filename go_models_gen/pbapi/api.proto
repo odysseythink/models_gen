@@ -1,0 +1,197 @@
+syntax = "proto3";
+
+package pbapi;
+
+// 协议头结构 所有的数据包都已Head开始
+// cmd     4n 命令值
+// size    4n 整个包的长度
+// seq     4n 包的序号
+// session 2n Session ID
+// ver     2n 协议版本（保留字段）
+
+// 心跳包:客户端 --> 服务器
+message PK_KEEPALIVE_REQ
+{
+	enum CMD_KEEPALIVE_REQ
+	{
+		UNKNOWN = 0;
+		CMD = 0x0A0B0001;
+	}
+}
+
+message PK_KEEPALIVE_RSP
+{
+	enum CMD_KEEPALIVE_RSP
+	{
+		UNKNOWN = 0;
+		CMD = 0x0B0A0001;
+	}
+}
+
+// 用户登录:客户端 --> 服务器 
+message PK_USER_LOGIN_REQ
+{
+	enum CMD_USER_LOGIN_REQ
+	{
+		UNKNOWN = 0;
+		CMD = 0x0A0B0002;
+	}
+	string name = 1; // 服务器ident
+	string pwd   = 2; // 密码
+}
+
+// 用户登录回包:服务器 --> 客户端
+message PK_USER_LOGIN_RSP
+{
+	enum CMD_USER_LOGIN_RSP
+	{
+		UNKNOWN = 0;
+		CMD = 0x0B0A0002;
+	}
+	string errMsg = 1; // 错误码: 0 -- 无错误; 1 -- email或密码错误
+}
+
+// 获取所有表名:客户端 --> 服务器 
+message PK_GET_ALL_TABNAMES_REQ
+{
+	enum CMD_GET_ALL_TABNAMES_REQ
+	{
+		UNKNOWN = 0;
+		CMD = 0x0A0B0003;
+	}
+}
+
+// 获取所有表名回包:服务器 --> 客户端
+message PK_GET_ALL_TABNAMES_RSP
+{
+	enum CMD_GET_ALL_TABNAMES_RSP
+	{
+		UNKNOWN = 0;
+		CMD = 0x0B0A0003;
+	}
+	         string errmsg = 1; // 错误码: 0 -- 无错误; 1 -- 其它错误
+	repeated string names     = 2;
+	repeated string deses     = 3;
+}
+
+// 打开数据库连接:客户端 --> 服务器 
+message PK_OPEN_DB_REQ
+{
+	enum CMD_OPEN_DB_REQ
+	{
+		UNKNOWN = 0;
+		CMD = 0x0A0B0005;
+	}
+	string host      = 2;
+	uint32 port      = 3;
+	string username  = 4;
+	string passwd    = 5;
+	string dbname    = 6;	
+}
+
+// 打开数据库连接回包:服务器 --> 客户端
+message PK_OPEN_DB_RSP
+{
+	enum CMD_OPEN_DB_RSP
+	{
+		UNKNOWN = 0;
+		CMD = 0x0B0A0005;
+	}
+	string errmsg = 1; // 错误码: 0 -- 无错误; 1 -- 其它错误
+}
+
+// 按页获取表名:客户端 --> 服务器 
+message PK_GET_TABNAMES_PAGE_REQ
+{
+	enum CMD_GET_TABNAMES_PAGE_REQ
+	{
+		UNKNOWN = 0;
+		CMD = 0x0A0B0006;
+	}
+	uint32 page   = 1;
+	uint32 limit  = 2;
+	string filter = 3;
+}
+
+// 按页获取表名回包:服务器 --> 客户端
+message PK_GET_TABNAMES_PAGE_RSP
+{
+	enum CMD_GET_TABNAMES_PAGE_RSP
+	{
+		UNKNOWN = 0;
+		CMD = 0x0B0A0006;
+	}
+	string errmsg = 1; // 错误码: 0 -- 无错误; 1 -- 其它错误
+			 uint32 total     = 2;
+	repeated string names     = 3;
+	repeated string deses     = 4;
+}
+
+// 获取建表sql语句:客户端 --> 服务器 
+message PK_GET_TAB_SQL_REQ
+{
+	enum CMD_GET_TAB_SQL_REQ
+	{
+		UNKNOWN = 0;
+		CMD = 0x0A0B0007;
+	}
+	string tabname = 1;
+}
+
+// 获取建表sql语句回包:服务器 --> 客户端
+message PK_GET_TAB_SQL_RSP
+{
+	enum CMD_GET_TAB_SQL_RSP
+	{
+		UNKNOWN = 0;
+		CMD = 0x0B0A0007;
+	}
+	string errmsg = 1; // 错误码: 0 -- 无错误; 1 -- 其它错误
+	string sql = 2;
+}
+
+// 获取model代码:客户端 --> 服务器 
+message PK_GET_TAB_MODEL_CODE_REQ
+{
+	enum CMD_GET_TAB_MODEL_CODE_REQ
+	{
+		UNKNOWN = 0;
+		CMD = 0x0A0B0008;
+	}
+	string tabname = 1;
+	string prefix  = 2;
+}
+
+// 获取model代码回包:服务器 --> 客户端
+message PK_GET_TAB_MODEL_CODE_RSP
+{
+	enum CMD_GET_TAB_MODEL_CODE_RSP
+	{
+		UNKNOWN = 0;
+		CMD = 0x0B0A0008;
+	}
+	string errmsg = 1; // 错误码: 0 -- 无错误; 1 -- 其它错误
+	string code = 2;
+}
+
+
+message PK_SET_LOG_DIR_REQ
+{
+	enum CMD_SET_LOG_DIR_REQ
+	{
+		UNKNOWN = 0;
+		CMD = 0x0A0B000A;
+	}
+	string dir = 1;
+}
+
+message PK_SET_LOG_DIR_RSP
+{
+	enum CMD_SET_LOG_DIR_RSP
+	{
+		UNKNOWN = 0;
+		CMD = 0x0B0A000A;
+	}
+	string errmsg = 1;
+}
+
