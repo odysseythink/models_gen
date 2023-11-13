@@ -50,13 +50,13 @@ void CPageWin::__ShowPageBtn()
     if (nTotalPage > 1){
         ui->m_iPrePageBtn->setEnabled(true);
         ui->m_iNextPageBtn->setEnabled(true);
-        ui->m_iFirstPageBtn->setEnabled(true);
-        ui->m_iLastPageBtn->setEnabled(true);
+        ui->m_iFirstPageBtn->setVisible(true);
+        ui->m_iLastPageBtn->setVisible(true);
     }else {
         ui->m_iPrePageBtn->setEnabled(false);
         ui->m_iNextPageBtn->setEnabled(false);
-        ui->m_iFirstPageBtn->setEnabled(true);
-        ui->m_iLastPageBtn->setEnabled(false);
+        ui->m_iFirstPageBtn->setVisible(true);
+        ui->m_iLastPageBtn->setVisible(false);
     }
     for(int iLoop = 1; iLoop < m_PageBtns.size()-1; iLoop++){
         if (iLoop <= nTotalPage-2){
@@ -94,6 +94,14 @@ void CPageWin::__ShowPageBtn()
     } else {
         ui->m_iNextPageBtn->setEnabled(true);
     }
+    for(int iLoop = 0; iLoop < m_PageBtns.size(); iLoop++){
+        int nPageVal = m_PageBtns.at(iLoop)->text().toInt();
+        if (m_nCurrentPage == nPageVal){
+            m_PageBtns.at(iLoop)->setStyleSheet ("color: red;");
+        }else{
+            m_PageBtns.at(iLoop)->setStyleSheet ("color: black;");
+        }
+    }
 }
 
 void CPageWin::__ShowPageBtnValue()
@@ -108,14 +116,6 @@ void CPageWin::__ShowPageBtnValue()
     }
     for(int iLoop = 1; iLoop < m_PageBtns.size()-1; iLoop++){
         m_PageBtns.at(iLoop)->setText(QString::number(nPage1+iLoop-1));
-    }
-    for(int iLoop = 0; iLoop < m_PageBtns.size(); iLoop++){
-        int nPageVal = m_PageBtns.at(iLoop)->text().toInt();
-        if (m_nCurrentPage == nPageVal){
-            m_PageBtns.at(iLoop)->setStyleSheet ("color: red;");
-        }else{
-            m_PageBtns.at(iLoop)->setStyleSheet ("color: black;");
-        }
     }
 }
 
