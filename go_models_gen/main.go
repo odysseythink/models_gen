@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"unsafe"
 
-	"demo.com/nlp_demo/knowledge_utils/go_knowledge_utils/pb"
 	"demo.com/szlanyou_demo/models_gen/go_models_gen/model"
 	"demo.com/szlanyou_demo/models_gen/go_models_gen/model/genmysql"
 	"demo.com/szlanyou_demo/models_gen/go_models_gen/pbapi"
@@ -215,8 +214,8 @@ func GetTabModelCode(req unsafe.Pointer, reqlen C.int, l *C.int) unsafe.Pointer 
 
 //export SetLogDir
 func SetLogDir(req unsafe.Pointer, reqlen C.int, l *C.int) unsafe.Pointer {
-	myreq := pb.PK_SET_LOG_DIR_REQ{}
-	myrsp := pb.PK_SET_LOG_DIR_RSP{}
+	myreq := pbapi.PK_SET_LOG_DIR_REQ{}
+	myrsp := pbapi.PK_SET_LOG_DIR_RSP{}
 	err := parseReqFromCPointer(req, reqlen, &myreq)
 	if err != nil {
 		mlog.Errorf("parse req failed:%v", err)
