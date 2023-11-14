@@ -41,10 +41,8 @@ RESOURCES += \
 
 RC_ICONS = logo.ico
 
-
-INCLUDEPATH += D:\qt_work\grpc\include
-
-LIBS += D:/go_work/gopath/src/demo.com/szlanyou_demo/models_gen/go_models_gen/libmodels_gen.a
+unix: LIBS += "../go_models_gen/libmodels_gen.a" -ldl -lresolv
+else: LIBS += "../go_models_gen/libmodels_gen.a"
 
 LIBS += -static -lprotobuf
 
