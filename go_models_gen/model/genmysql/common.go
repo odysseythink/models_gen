@@ -3,7 +3,6 @@ package genmysql
 import (
 	"strings"
 
-	"mlib.com/mconfig"
 	"mlib.com/mlog"
 
 	"demo.com/szlanyou_demo/models_gen/go_models_gen/model"
@@ -11,7 +10,8 @@ import (
 
 // filterModel filter.过滤 gorm.Model
 func filterModel(list *[]genColumns) bool {
-	if mconfig.GetString("DBTag") != "gorm" {
+	DBTag := ""
+	if DBTag != "gorm" {
 		return false
 	}
 

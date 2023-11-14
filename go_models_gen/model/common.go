@@ -6,8 +6,6 @@ import (
 	"regexp"
 	"strings"
 	"text/template"
-
-	"mlib.com/mconfig"
 )
 
 // getCamelName Big Hump or Capital Letter.大驼峰或者首字母大写
@@ -42,7 +40,7 @@ func CapLowercase(name string) string { // IDAPIID == > idAPIID
 
 // GetTablePrefixName 获取带表前缀名字的tablename
 func GetTablePrefixName(name string) string { //
-	tablePrefix := mconfig.GetString("TablePrefix")
+	tablePrefix := ""
 	//如果设置了表前缀
 	if tablePrefix != "" {
 		return fmt.Sprintf("%v.%v", tablePrefix, name)
@@ -58,7 +56,8 @@ func FilterKeywords(src string) string {
 // getTypeName Type acquisition filtering.类型获取过滤
 func getTypeName(name string, isNull bool) string {
 	// 优先匹配自定义类型
-	selfDefineTypeMqlDicMap := mconfig.GetStringMapString("SelfTypeDefine")
+
+	selfDefineTypeMqlDicMap := make(map[string]string)
 	if v, ok := selfDefineTypeMqlDicMap[name]; ok {
 		return fixNullToPorint(v, isNull)
 	}
@@ -80,7 +79,8 @@ func getTypeName(name string, isNull bool) string {
 
 // 过滤null point 类型
 func fixNullToPorint(name string, isNull bool) string {
-	if isNull && mconfig.GetBool("IsNullToPoint") {
+	IsNullToPoint := false
+	if isNull && IsNullToPoint {
 		if strings.HasPrefix(name, "uint") {
 			return "*" + name
 		}
@@ -115,7 +115,7 @@ func getGormModelElement() []EmInfo {
 	result = append(result, EmInfo{
 		IsMulti:       false,
 		Notes:         "created time",
-		Type:          "time.Time", // Type.类型标记
+		Type:          "*time.Time", // Type.类型标记
 		ColName:       "created_at",
 		ColStructName: "CreatedAt",
 	})
@@ -123,7 +123,7 @@ func getGormModelElement() []EmInfo {
 	result = append(result, EmInfo{
 		IsMulti:       false,
 		Notes:         "updated at",
-		Type:          "time.Time", // Type.类型标记
+		Type:          "*time.Time", // Type.类型标记
 		ColName:       "updated_at",
 		ColStructName: "UpdatedAt",
 	})
@@ -131,7 +131,7 @@ func getGormModelElement() []EmInfo {
 	result = append(result, EmInfo{
 		IsMulti:       false,
 		Notes:         "deleted time",
-		Type:          "time.Time", // Type.类型标记
+		Type:          "*time.Time", // Type.类型标记
 		ColName:       "deleted_at",
 		ColStructName: "DeletedAt",
 	})

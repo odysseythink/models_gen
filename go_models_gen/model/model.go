@@ -7,7 +7,6 @@ import (
 	"text/template"
 
 	"demo.com/szlanyou_demo/models_gen/go_models_gen/hump"
-	"mlib.com/mconfig"
 	"mlib.com/mlog"
 )
 
@@ -53,11 +52,11 @@ func GenerateTabModelCode(m IModel, tbname, tbprefix string) string {
 		pa.Add(v1)
 	}
 
-	if mconfig.GetBool("IsTableName") { // add table name func
-		for _, v1 := range sct.GenerateTableName() {
-			pa.Add(v1)
-		}
+	// add table name func
+	for _, v1 := range sct.GenerateTableName() {
+		pa.Add(v1)
 	}
+
 	output := ""
 	for _, v := range pa.Generates() {
 		output += v
@@ -77,7 +76,8 @@ func Generate(info *DBInfo) (out []GenOutInfo, m _Model) {
 	stt.FileCtx = m.generate()
 	stt.FileName = info.DbName + ".go"
 
-	if name := mconfig.GetString("OutFileName"); len(name) > 0 {
+	OutFileName := ""
+	if name := OutFileName; len(name) > 0 {
 		stt.FileName = name + ".go"
 	}
 
@@ -85,7 +85,8 @@ func Generate(info *DBInfo) (out []GenOutInfo, m _Model) {
 	// ------end
 
 	// gen function
-	if mconfig.GetBool("IsOutFunc") {
+	IsOutFunc := false
+	if IsOutFunc {
 		out = append(out, m.generateFunc()...)
 	}
 	// -------------- end
@@ -94,11 +95,11 @@ func Generate(info *DBInfo) (out []GenOutInfo, m _Model) {
 
 // genTableElement Get table columns and comments.获取表列及注释
 func getGenElement(cols []ColumnsInfo) (el []GenElement) {
-	_tagGorm := mconfig.GetString("DBTag")
+	_tagGorm := ""
 	if _tagGorm == "" {
 		_tagGorm = "gorm"
 	}
-	_tagJSON := mconfig.GetString("URLTag")
+	_tagJSON := ""
 	if _tagJSON == "" {
 		_tagJSON = "json"
 	}
@@ -134,7 +135,8 @@ func getGenElement(cols []ColumnsInfo) (el []GenElement) {
 
 		if len(v.Name) > 0 {
 			// not simple output
-			if !mconfig.GetBool("Simple") {
+			Simple := false
+			if !Simple {
 				tmp.AddTag(_tagGorm, "column:"+v.Name)
 				tmp.AddTag(_tagGorm, "type:"+v.Type)
 				if !v.IsNull {
@@ -147,7 +149,8 @@ func getGenElement(cols []ColumnsInfo) (el []GenElement) {
 			}
 
 			// json tag
-			if isPK && mconfig.GetBool("IsWebTagPkHidden") {
+			IsWebTagPkHidden := false
+			if isPK && IsWebTagPkHidden {
 				tmp.AddTag(_tagJSON, "-")
 			} else {
 				tmp.AddTag(_tagJSON, v.Name)
@@ -200,8 +203,8 @@ func (m *_Model) generate() string {
 
 // genTableElement Get table columns and comments.获取表列及注释
 func (m *_Model) genTableElement(cols []ColumnsInfo) (el []GenElement) {
-	_tagGorm := mconfig.GetString("DBTag")
-	_tagJSON := mconfig.GetString("URLTag")
+	_tagGorm := ""
+	_tagJSON := ""
 
 	for _, v := range cols {
 		var tmp GenElement
@@ -234,7 +237,8 @@ func (m *_Model) genTableElement(cols []ColumnsInfo) (el []GenElement) {
 
 		if len(v.Name) > 0 {
 			// not simple output
-			if !mconfig.GetBool("Simple") {
+			Simple := false
+			if !Simple {
 				tmp.AddTag(_tagGorm, "column:"+v.Name)
 				tmp.AddTag(_tagGorm, "type:"+v.Type)
 				if !v.IsNull {
@@ -247,11 +251,14 @@ func (m *_Model) genTableElement(cols []ColumnsInfo) (el []GenElement) {
 			}
 
 			// json tag
-			if mconfig.GetBool("IsWEBTag") {
-				if isPK && mconfig.GetBool("IsWebTagPkHidden") {
+			IsWEBTag := false
+			if IsWEBTag {
+				IsWebTagPkHidden := false
+				if isPK && IsWebTagPkHidden {
 					tmp.AddTag(_tagJSON, "-")
 				} else {
-					if mconfig.GetInt("WebTagType") == 0 {
+					WebTagType := 0
+					if WebTagType == 0 {
 						tmp.AddTag(_tagJSON, v.Name)
 					} else {
 						tmp.AddTag(_tagJSON, v.Name)
@@ -265,7 +272,8 @@ func (m *_Model) genTableElement(cols []ColumnsInfo) (el []GenElement) {
 		el = append(el, tmp)
 
 		// ForeignKey
-		if mconfig.GetBool("IsForeignKey") && len(v.ForeignKeyList) > 0 {
+		IsForeignKey := false
+		if IsForeignKey && len(v.ForeignKeyList) > 0 {
 			fklist := m.genForeignKey(v)
 			el = append(el, fklist...)
 		}
@@ -277,8 +285,8 @@ func (m *_Model) genTableElement(cols []ColumnsInfo) (el []GenElement) {
 
 // genForeignKey Get information about foreign key of table column.获取表列外键相关信息
 func (m *_Model) genForeignKey(col ColumnsInfo) (fklist []GenElement) {
-	_tagGorm := mconfig.GetString("DBTag")
-	_tagJSON := mconfig.GetString("URLTag")
+	_tagGorm := ""
+	_tagJSON := ""
 
 	for _, v := range col.ForeignKeyList {
 		isMulti, isFind, notes := m.getColumnsKeyMulti(v.TableName, v.ColumnName)
@@ -297,8 +305,10 @@ func (m *_Model) genForeignKey(col ColumnsInfo) (fklist []GenElement) {
 			tmp.AddTag(_tagGorm, "foreignKey:"+v.ColumnName)
 
 			// json tag
-			if mconfig.GetBool("IsWEBTag") {
-				if mconfig.GetInt("WebTagType") == 0 {
+			IsWEBTag := false
+			if IsWEBTag {
+				WebTagType := 0
+				if WebTagType == 0 {
 					tmp.AddTag(_tagJSON, v.TableName+"List")
 				} else {
 					tmp.AddTag(_tagJSON, v.TableName+"_list")

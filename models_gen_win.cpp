@@ -140,6 +140,7 @@ void CModelsGenWin::__OnTabSelected(QStringList rowdata, int col)
         pbapi::PK_GET_TAB_MODEL_CODE_REQ req;
         pbapi::PK_GET_TAB_MODEL_CODE_RSP rsp;
         req.set_tabname(rowdata[0].toStdString());
+        req.set_prefix(ui->m_iTabPrefixEdit->text().toStdString());
         if (Call_Go_Func(&req, &rsp, GetTabModelCode) == 0) {
             qDebug() << "get tab model code response:" << rsp.errmsg().c_str();
             if (rsp.errmsg() == ""){
@@ -162,6 +163,7 @@ void CModelsGenWin::__OnShowRBtnClicked()
             pbapi::PK_GET_TAB_MODEL_CODE_REQ req;
             pbapi::PK_GET_TAB_MODEL_CODE_RSP rsp;
             req.set_tabname(m_CurrentTabDatas[0].toStdString());
+            req.set_prefix(ui->m_iTabPrefixEdit->text().toStdString());
             if (Call_Go_Func(&req, &rsp, GetTabModelCode) == 0) {
                 qDebug() << "get tab model code response:" << rsp.errmsg().c_str();
                 if (rsp.errmsg() == ""){

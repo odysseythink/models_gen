@@ -8,7 +8,6 @@ import (
 	"text/template"
 
 	"demo.com/szlanyou_demo/models_gen/go_models_gen/hump"
-	"mlib.com/mconfig"
 )
 
 // GenElement element of sturct.元素类
@@ -217,7 +216,8 @@ func (s *GenStruct) GenerateColumnName() []string {
 // Generates Get the result data.获取结果数据
 func (s *GenStruct) Generates() []string {
 	var p PrintAtom
-	if mconfig.GetBool("IsOutSQL") {
+	IsOutSQL := false
+	if IsOutSQL {
 		p.Add("/******sql******")
 		p.Add(s.SQLBuildStr)
 		p.Add("******sql******/")
@@ -240,7 +240,8 @@ func (s *GenStruct) Generates() []string {
 // GeneratesColor Get the result data on color.获取结果数据 带颜色
 func (s *GenStruct) GeneratesColor() []string {
 	var p PrintAtom
-	if mconfig.GetBool("IsOutSQL") {
+	IsOutSQL := false
+	if IsOutSQL {
 		p.Add("\033[32;1m /******sql******\033[0m")
 		p.Add(s.SQLBuildStr)
 		p.Add("\033[32;1m ******sql******/ \033[0m")
@@ -302,7 +303,8 @@ func (p *GenPackage) Generate() string {
 			pa.Add(v1)
 		}
 
-		if mconfig.GetBool("IsTableName") { // add table name func
+		IsTableName := false
+		if IsTableName { // add table name func
 			for _, v1 := range v.GenerateTableName() {
 				pa.Add(v1)
 			}
