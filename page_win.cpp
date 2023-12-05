@@ -3,6 +3,9 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QDebug>
+#include <QButtonGroup>
+#include <QHBoxLayout>
+
 
 CPageWin::CPageWin(QWidget *parent) :
     QWidget(parent),
@@ -21,6 +24,7 @@ CPageWin::CPageWin(QWidget *parent) :
     m_PageBtns.append(ui->m_iPage4Btn);
     m_PageBtns.append(ui->m_iPage5Btn);
     m_PageBtns.append(ui->m_iLastPageBtn);
+    __ChangePageBtnSize();
 }
 
 CPageWin::~CPageWin()
@@ -31,14 +35,14 @@ CPageWin::~CPageWin()
 void CPageWin::SetGetPageFunCB(GetPageFunCB cb)
 {
     m_GetPageFunCB = cb;
-    __Refresh();
+    Refresh();
 }
 
 void CPageWin::Reset()
 {
     m_nCurrentPage = 1;
     ui->m_iPage1Btn->setText(QString::number(2));
-    if(m_GetPageFunCB !=nullptr)__Refresh();
+    if(m_GetPageFunCB !=nullptr)Refresh();
 
 }
 
@@ -119,8 +123,36 @@ void CPageWin::__ShowPageBtnValue()
     }
 }
 
-void CPageWin::__Refresh()
+void CPageWin::__ChangePageBtnSize()
 {
+    for(int iLoop = 0; iLoop < m_PageBtns.size(); iLoop++){
+        QSize sz = __GetTextSize(m_PageBtns.at(iLoop)->text());
+        if(m_PageBtns.at(iLoop) == ui->m_iLastPageBtn){
+            qDebug() << "---------m_iLastPageBtn width=" << sz.width();
+        }
+        m_PageBtns.at(iLoop)->setMinimumWidth(sz.width()+10);
+        m_PageBtns.at(iLoop)->setMaximumWidth(sz.width()+10);
+    }
+}
+
+QSize CPageWin::__GetTextSize(const QString &text)
+{
+//        /* 设置字体属性 */
+//        QFont font;
+//        font.setPixelSize(45);
+//        font.setFamily("Microsoft YaHei UI");
+
+        /* 设置字体信息 */
+        QFontMetrics metrics(ui->m_iLastPageBtn->font());
+
+        return metrics.size(Qt::TextSingleLine, text);
+}
+
+void CPageWin::Refresh()
+{
+    if (m_GetPageFunCB == nullptr){
+        return;
+    }
     qDebug()<< "---m_nCurrentPage=" << m_nCurrentPage;
     int limit = (ui->m_iLimitEdit->currentIndex()+1)*10;
     QList<QStringList> res = m_GetPageFunCB(m_nCurrentPage, limit, &m_nTotal);
@@ -131,10 +163,30 @@ void CPageWin::__Refresh()
     for (auto iLoop = 0; iLoop < res.size(); iLoop++){
         QList<QStandardItem*> rowItems;
         for (auto jLoop = 0; jLoop < cCount; jLoop++){
-            QStandardItem* pItem = new QStandardItem(res.at(iLoop).at(jLoop));
+            QStringList tmplist = res.at(iLoop);
+            QStandardItem* pItem = new QStandardItem(jLoop>=tmplist.size()?"":res.at(iLoop).at(jLoop));
             rowItems.append(pItem);
         }
         m_DataModel.appendRow(rowItems);
+        if (m_Operations.size() > 0){
+            QWidget* pGroup = new QWidget(this);
+            QHBoxLayout* pGroupLayout = new QHBoxLayout();
+            pGroupLayout->setContentsMargins(0,0,0,0);
+            pGroupLayout->setSpacing(5);
+            pGroup->setLayout(pGroupLayout);
+            pGroupLayout->addSpacerItem(new QSpacerItem(16777215, 0));
+            QStringList operationNames = m_Operations.keys();
+            for(auto jLoop = 0; jLoop < operationNames.size(); jLoop++){
+                QPushButton* pBtn = new QPushButton(operationNames.at(jLoop));
+                qDebug() << "------++" << operationNames.at(jLoop).size();
+                pBtn->setFixedWidth(46);
+                pBtn->setProperty("row", iLoop);
+                connect(pBtn, SIGNAL(clicked()), this, SLOT(__OnOpenration()));
+                pGroupLayout->addWidget(pBtn);
+            }
+            pGroupLayout->addSpacerItem(new QSpacerItem(16777215, 0));
+            ui->m_iDataView->setIndexWidget(m_DataModel.index(iLoop, cCount-1), pGroup);
+        }
     }
 //    ui->m_iDataView->resizeColumnsToContents();
     qDebug()<< "---m_nTotal=" << m_nTotal;
@@ -145,8 +197,27 @@ void CPageWin::__Refresh()
     ui->m_iFirstPageBtn->setText(QString::number(1));
     __ShowPageBtnValue();
     __ShowPageBtn();
+    __ChangePageBtnSize();
     QStringList datas;
     emit sigDataSelected(datas, -1);
+}
+
+void CPageWin::AddOperation(QString title, OperationFunCB cb)
+{
+    int colCount = m_DataModel.columnCount();
+    QStandardItem* pItem = m_DataModel.horizontalHeaderItem(colCount-1);
+    if (pItem != nullptr){
+        qDebug() << "--------" << pItem->text();
+        if(pItem->text() != tr("操作")){
+            QStringList header;
+            for (int iLoop = 0; iLoop < colCount; iLoop++){
+                header << m_DataModel.horizontalHeaderItem(iLoop)->text();
+            }
+            header << tr("操作");
+            SetHeader(header);
+            m_Operations[title] = cb;
+        }
+    }
 }
 
 void CPageWin::__OnPageChange()
@@ -155,21 +226,21 @@ void CPageWin::__OnPageChange()
     QPushButton* pBtn = qobject_cast<QPushButton*>(sender());
     if (pBtn == ui->m_iPrePageBtn){
         m_nCurrentPage--;
-        __Refresh();
+        Refresh();
     } else if (pBtn == ui->m_iNextPageBtn){
         m_nCurrentPage++;
-        __Refresh();
+        Refresh();
     } else {
         int nPage = pBtn->text().toInt();
         m_nCurrentPage = nPage;
-        __Refresh();
+        Refresh();
     }
 }
 
 void CPageWin::__OnLimitChange(int index)
 {
     m_nCurrentPage = 1;
-    __Refresh();
+    Refresh();
 }
 
 void CPageWin::__OnDataSelected(const QModelIndex &index)
@@ -183,6 +254,22 @@ void CPageWin::__OnDataSelected(const QModelIndex &index)
         datas.append(m_DataModel.item(index.row(),iLoop)->text());
     }
     emit sigDataSelected(datas, index.column());
+}
+
+void CPageWin::__OnOpenration()
+{
+    QPushButton* pBtn = qobject_cast<QPushButton*>(sender());
+    if (pBtn != nullptr){
+        if(m_Operations.contains(pBtn->text()) && m_Operations[pBtn->text()] != nullptr){
+            QStringList data;
+            int row = pBtn->property("row").toInt();
+            int cCount = m_DataModel.columnCount();
+            for (auto iLoop = 0; iLoop < cCount-1; iLoop++){
+                data.append(m_DataModel.item(row,iLoop)->text());
+            }
+            m_Operations[pBtn->text()](data);
+        }
+    }
 }
 
 

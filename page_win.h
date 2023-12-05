@@ -6,8 +6,10 @@
 #include <QStandardItemModel>
 #include <QPushButton>
 #include <QList>
+#include <QMap>
 
 using GetPageFunCB = std::function<QList<QStringList>(int, int, int64_t*)>;
+using OperationFunCB = std::function<void (QStringList)>;
 
 namespace Ui {
 class CPageWin;
@@ -22,19 +24,24 @@ public:
     ~CPageWin();
     void SetHeader(QStringList header){
         m_DataModel.setHorizontalHeaderLabels(header);
+        Refresh();
     }
     void SetGetPageFunCB(GetPageFunCB cb);
     void Reset();
+    void Refresh();
+    void AddOperation(QString title, OperationFunCB cb);
 
 private:
     void __ShowPageBtn();
     void __ShowPageBtnValue();
-    void __Refresh();
+    void __ChangePageBtnSize();
+    QSize __GetTextSize(const QString &text);
 
 private slots:
     void __OnPageChange();
     void __OnLimitChange(int index);
     void __OnDataSelected(const QModelIndex &index);
+    void __OnOpenration();
 
 signals:
     void sigDataSelected(QStringList rowdata, int col);
@@ -47,6 +54,7 @@ private:
     QStandardItemModel m_DataModel;
     GetPageFunCB m_GetPageFunCB;
     QList<QPushButton* > m_PageBtns;
+    QMap<QString, OperationFunCB> m_Operations;
 };
 
 #endif // PAGE_WIN_H
