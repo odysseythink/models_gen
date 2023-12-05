@@ -12,24 +12,24 @@ SOURCES += \
     go_interface.cpp \
     handler_thd.cpp \
     main.cpp \
+    page_widget.cpp \
     settings.cpp \
     api.pb.cc \
-    models_gen_win.cpp \
-    page_win.cpp
+    models_gen_win.cpp
 
 HEADERS += \
     go_interface.h \
     go_models_gen/c_2_go_interface.h \
     go_models_gen/libmodels_gen.h \
+    page_widget.h \
     settings.h \
     api.pb.h \
     handler_thd.h \
-    models_gen_win.h \
-    page_win.h
+    models_gen_win.h
 
 FORMS += \
     models_gen_win.ui \
-    page_win.ui
+    page_widget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

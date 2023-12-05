@@ -1,5 +1,5 @@
-#ifndef PAGE_WIN_H
-#define PAGE_WIN_H
+#ifndef PAGE_WIDGET_H
+#define PAGE_WIDGET_H
 
 #include <QWidget>
 #include <functional>
@@ -12,16 +12,16 @@ using GetPageFunCB = std::function<QList<QStringList>(int, int, int64_t*)>;
 using OperationFunCB = std::function<void (QStringList)>;
 
 namespace Ui {
-class CPageWin;
+class CPageWidget;
 }
 
-class CPageWin : public QWidget
+class CPageWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit CPageWin(QWidget *parent = nullptr);
-    ~CPageWin();
+    explicit CPageWidget(QWidget *parent = nullptr);
+    ~CPageWidget();
     void SetHeader(QStringList header){
         m_DataModel.setHorizontalHeaderLabels(header);
         Refresh();
@@ -47,7 +47,7 @@ signals:
     void sigDataSelected(QStringList rowdata, int col);
 
 private:
-    Ui::CPageWin *ui;
+    Ui::CPageWidget *ui;
     int64_t m_nTotal;
     int32_t m_nCurrentPage;
     int32_t m_nWantedPage;
@@ -57,4 +57,4 @@ private:
     QMap<QString, OperationFunCB> m_Operations;
 };
 
-#endif // PAGE_WIN_H
+#endif // PAGE_WIDGET_H

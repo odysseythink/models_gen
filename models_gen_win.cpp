@@ -8,7 +8,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include "settings.h"
-#include "page_win.h"
+#include "page_widget.h"
 
 CModelsGenWin::CModelsGenWin(QWidget *parent)
     : QWidget(parent)
@@ -19,7 +19,7 @@ CModelsGenWin::CModelsGenWin(QWidget *parent)
     ui->setupUi(this);
 
     QStringList strs = {tr("表名"),tr("说明")};
-    ui->m_iPageWin->SetHeader(strs);
+    ui->m_iPageWidget->SetHeader(strs);
     __ClearUI();
 //    ui->m_iTabGBox->setEnabled(false);
 //    ui->m_iShowGBox->setEnabled(false);
@@ -31,8 +31,8 @@ CModelsGenWin::CModelsGenWin(QWidget *parent)
     ui->m_iDatabaseNameEdit->setText(dbsetting.value("DBName").toString());
     __OpenDB();
     GetPageFunCB fun = std::bind(&CModelsGenWin::__GetPage, this, std::placeholders::_1,std::placeholders::_2,std::placeholders::_3);
-    ui->m_iPageWin->SetGetPageFunCB(fun);
-    connect(ui->m_iPageWin, SIGNAL(sigDataSelected(QStringList,int)), this, SLOT(__OnTabSelected(QStringList,int)));
+    ui->m_iPageWidget->SetGetPageFunCB(fun);
+    connect(ui->m_iPageWidget, SIGNAL(sigDataSelected(QStringList,int)), this, SLOT(__OnTabSelected(QStringList,int)));
 }
 
 CModelsGenWin::~CModelsGenWin()
@@ -94,7 +94,7 @@ void CModelsGenWin::__OpenDB()
             dbsetting["Passwd"] = ui->m_iPasswdEdit->text();
             dbsetting["DBName"] = ui->m_iDatabaseNameEdit->text();
             Settings::GetInstance()->setValue("DB", dbsetting);
-            ui->m_iPageWin->Reset();
+            ui->m_iPageWidget->Reset();
         }
     } else {
         qCritical() << "call OpenDb failed";
@@ -111,7 +111,7 @@ void CModelsGenWin::__OnSearch()
         ui->m_iSearchEdit->setFocus();
         return;
     }
-    ui->m_iPageWin->Reset();
+    ui->m_iPageWidget->Reset();
 }
 
 void CModelsGenWin::__OnTabSelected(QStringList rowdata, int col)

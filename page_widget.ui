@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CPageWin</class>
- <widget class="QWidget" name="CPageWin">
+ <class>CPageWidget</class>
+ <widget class="QWidget" name="CPageWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -277,7 +277,7 @@
   <connection>
    <sender>m_iPrePageBtn</sender>
    <signal>clicked()</signal>
-   <receiver>CPageWin</receiver>
+   <receiver>CPageWidget</receiver>
    <slot>__OnPageChange()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -293,7 +293,7 @@
   <connection>
    <sender>m_iFirstPageBtn</sender>
    <signal>clicked()</signal>
-   <receiver>CPageWin</receiver>
+   <receiver>CPageWidget</receiver>
    <slot>__OnPageChange()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -309,7 +309,7 @@
   <connection>
    <sender>m_iPage2Btn</sender>
    <signal>clicked()</signal>
-   <receiver>CPageWin</receiver>
+   <receiver>CPageWidget</receiver>
    <slot>__OnPageChange()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -325,7 +325,7 @@
   <connection>
    <sender>m_iPage3Btn</sender>
    <signal>clicked()</signal>
-   <receiver>CPageWin</receiver>
+   <receiver>CPageWidget</receiver>
    <slot>__OnPageChange()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -341,7 +341,7 @@
   <connection>
    <sender>m_iPage4Btn</sender>
    <signal>clicked()</signal>
-   <receiver>CPageWin</receiver>
+   <receiver>CPageWidget</receiver>
    <slot>__OnPageChange()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -357,7 +357,7 @@
   <connection>
    <sender>m_iLastPageBtn</sender>
    <signal>clicked()</signal>
-   <receiver>CPageWin</receiver>
+   <receiver>CPageWidget</receiver>
    <slot>__OnPageChange()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -373,7 +373,7 @@
   <connection>
    <sender>m_iNextPageBtn</sender>
    <signal>clicked()</signal>
-   <receiver>CPageWin</receiver>
+   <receiver>CPageWidget</receiver>
    <slot>__OnPageChange()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -389,7 +389,7 @@
   <connection>
    <sender>m_iPage1Btn</sender>
    <signal>clicked()</signal>
-   <receiver>CPageWin</receiver>
+   <receiver>CPageWidget</receiver>
    <slot>__OnPageChange()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -405,7 +405,7 @@
   <connection>
    <sender>m_iPage5Btn</sender>
    <signal>clicked()</signal>
-   <receiver>CPageWin</receiver>
+   <receiver>CPageWidget</receiver>
    <slot>__OnPageChange()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -421,7 +421,7 @@
   <connection>
    <sender>m_iLimitEdit</sender>
    <signal>currentIndexChanged(int)</signal>
-   <receiver>CPageWin</receiver>
+   <receiver>CPageWidget</receiver>
    <slot>__OnLimitChange(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -437,7 +437,7 @@
   <connection>
    <sender>m_iDataView</sender>
    <signal>clicked(QModelIndex)</signal>
-   <receiver>CPageWin</receiver>
+   <receiver>CPageWidget</receiver>
    <slot>__OnDataSelected(QModelIndex)</slot>
    <hints>
     <hint type="sourcelabel">

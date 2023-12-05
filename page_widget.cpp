@@ -1,5 +1,5 @@
-#include "page_win.h"
-#include "ui_page_win.h"
+#include "page_widget.h"
+#include "ui_page_widget.h"
 #include <QMessageBox>
 #include <QPushButton>
 #include <QDebug>
@@ -7,9 +7,9 @@
 #include <QHBoxLayout>
 
 
-CPageWin::CPageWin(QWidget *parent) :
+CPageWidget::CPageWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::CPageWin)
+    ui(new Ui::CPageWidget)
 {
     ui->setupUi(this);
     m_GetPageFunCB = nullptr;
@@ -27,18 +27,18 @@ CPageWin::CPageWin(QWidget *parent) :
     __ChangePageBtnSize();
 }
 
-CPageWin::~CPageWin()
+CPageWidget::~CPageWidget()
 {
     delete ui;
 }
 
-void CPageWin::SetGetPageFunCB(GetPageFunCB cb)
+void CPageWidget::SetGetPageFunCB(GetPageFunCB cb)
 {
     m_GetPageFunCB = cb;
     Refresh();
 }
 
-void CPageWin::Reset()
+void CPageWidget::Reset()
 {
     m_nCurrentPage = 1;
     ui->m_iPage1Btn->setText(QString::number(2));
@@ -46,7 +46,7 @@ void CPageWin::Reset()
 
 }
 
-void CPageWin::__ShowPageBtn()
+void CPageWidget::__ShowPageBtn()
 {
     ui->m_iTotalLbl->setText(QString("共%1条").arg(m_nTotal));
     int nTotalPage = ui->m_iLastPageBtn->text().toInt();
@@ -108,7 +108,7 @@ void CPageWin::__ShowPageBtn()
     }
 }
 
-void CPageWin::__ShowPageBtnValue()
+void CPageWidget::__ShowPageBtnValue()
 {
     int nTotalPage = ui->m_iLastPageBtn->text().toInt();
     int nFirstPage = ui->m_iFirstPageBtn->text().toInt();
@@ -123,7 +123,7 @@ void CPageWin::__ShowPageBtnValue()
     }
 }
 
-void CPageWin::__ChangePageBtnSize()
+void CPageWidget::__ChangePageBtnSize()
 {
     for(int iLoop = 0; iLoop < m_PageBtns.size(); iLoop++){
         QSize sz = __GetTextSize(m_PageBtns.at(iLoop)->text());
@@ -135,7 +135,7 @@ void CPageWin::__ChangePageBtnSize()
     }
 }
 
-QSize CPageWin::__GetTextSize(const QString &text)
+QSize CPageWidget::__GetTextSize(const QString &text)
 {
 //        /* 设置字体属性 */
 //        QFont font;
@@ -148,7 +148,7 @@ QSize CPageWin::__GetTextSize(const QString &text)
         return metrics.size(Qt::TextSingleLine, text);
 }
 
-void CPageWin::Refresh()
+void CPageWidget::Refresh()
 {
     if (m_GetPageFunCB == nullptr){
         return;
@@ -202,7 +202,7 @@ void CPageWin::Refresh()
     emit sigDataSelected(datas, -1);
 }
 
-void CPageWin::AddOperation(QString title, OperationFunCB cb)
+void CPageWidget::AddOperation(QString title, OperationFunCB cb)
 {
     int colCount = m_DataModel.columnCount();
     QStandardItem* pItem = m_DataModel.horizontalHeaderItem(colCount-1);
@@ -220,7 +220,7 @@ void CPageWin::AddOperation(QString title, OperationFunCB cb)
     }
 }
 
-void CPageWin::__OnPageChange()
+void CPageWidget::__OnPageChange()
 {
     int totalPage = ui->m_iLastPageBtn->text().toInt();
     QPushButton* pBtn = qobject_cast<QPushButton*>(sender());
@@ -237,13 +237,13 @@ void CPageWin::__OnPageChange()
     }
 }
 
-void CPageWin::__OnLimitChange(int index)
+void CPageWidget::__OnLimitChange(int index)
 {
     m_nCurrentPage = 1;
     Refresh();
 }
 
-void CPageWin::__OnDataSelected(const QModelIndex &index)
+void CPageWidget::__OnDataSelected(const QModelIndex &index)
 {
     qDebug() << "selected history is " << m_DataModel.itemFromIndex(index)->text();
     qDebug() << "---------row=" << index.row();
@@ -256,7 +256,7 @@ void CPageWin::__OnDataSelected(const QModelIndex &index)
     emit sigDataSelected(datas, index.column());
 }
 
-void CPageWin::__OnOpenration()
+void CPageWidget::__OnOpenration()
 {
     QPushButton* pBtn = qobject_cast<QPushButton*>(sender());
     if (pBtn != nullptr){
